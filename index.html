@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NirmaanX - Interactive Civic Education</title>
+
+    <!-- PWA Manifest Meta Tags -->
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇮🇳</text></svg>">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: 'var(--bg-page)',
+                        secondary: 'var(--bg-surface)',
+                        accent1: 'var(--text-accent)',
+                        accent2: 'var(--accent)',
+                        surface: 'var(--bg-card)',
+                        textPrimary: 'var(--text-primary)',
+                        textMuted: 'var(--text-muted)',
+                        success: '#4ade80',
+                        warning: '#fbbf24',
+                        danger: '#f87171',
+                        badgeGold: '#f59e0b',
+                        badgeSilver: '#94a3b8',
+                        badgeBronze: '#cd7c2f'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS for Effects -->
+    <style>
+        :root, [data-theme="C"] {
+            /* Theme C — Cream + Olive (DEFAULT) */
+            --bg-page: #f8f4ec; --bg-surface: #eee8d8; --bg-card: #f8f4ec;
+            --border-color: #ddd5c0; --accent: #5a6e35; --accent-text: #e8f0d0;
+            --text-primary: #2c3320; --text-muted: #7a7060; --text-accent: #3d5020;
+        }
+        [data-theme="A"] {
+            /* Theme A — Warm Parchment */
+            --bg-page: #faf6ef; --bg-surface: #f0e9dc; --bg-card: #faf6ef;
+            --border-color: #ddd0b8; --accent: #e8c84a; --accent-text: #3d2f00;
+            --text-primary: #2d2416; --text-muted: #8a7055; --text-accent: #b8960a;
+        }
+        [data-theme="B"] {
+            /* Theme B — Stark Yellow Dark */
+            --bg-page: #0f0f0f; --bg-surface: #161616; --bg-card: #1a1a1a;
+            --border-color: #2a2a2a; --accent: #f5e642; --accent-text: #1a1500;
+            --text-primary: #f0f0f0; --text-muted: #666666; --text-accent: #f5e642;
+        }
+        [data-theme="D"] {
+            /* Theme D — Midnight Blue */
+            --bg-page: #0d1117; --bg-surface: #161b22; --bg-card: #1c2128;
+            --border-color: #21262d; --accent: #1f6feb; --accent-text: #cae8ff;
+            --text-primary: #e6edf3; --text-muted: #848d97; --text-accent: #58a6ff;
+        }
+        [data-theme="E"] {
+            /* Theme E — Saffron + Ivory */
+            --bg-page: #fdf8f0; --bg-surface: #faebd7; --bg-card: #fdf8f0;
+            --border-color: #e8d5b7; --accent: #c0392b; --accent-text: #fdf8f0;
+            --text-primary: #1a0a00; --text-muted: #8b6050; --text-accent: #c0392b;
+        }
+        [data-theme="F"] {
+            /* Theme F — Catppuccin Mocha */
+            --bg-page: #0a0a0f; --bg-surface: #12121a; --bg-card: #1e1e2e;
+            --border-color: #313244; --accent: #cba6f7; --accent-text: #1e1e2e;
+            --text-primary: #cdd6f4; --text-muted: #585b70; --text-accent: #cba6f7;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .glass-card {
+            background-color: color-mix(in srgb, var(--bg-card) 80%, transparent);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-panel {
+            background-color: color-mix(in srgb, var(--bg-surface) 90%, transparent);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid var(--border-color);
+        }
+
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px 0 color-mix(in srgb, var(--accent) 20%, transparent);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-page);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--text-accent);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--bg-card);
+        }
+
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+        
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--bg-card);
+            z-index: 0;
+            transform: translateY(-50%);
+        }
+        .timeline-progress {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 4px;
+            background: var(--accent);
+            z-index: 0;
+            transform: translateY(-50%);
+            transition: width 0.5s ease;
+        }
+    </style>
+
+    <!-- React & ReactDOM (CDN) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel (CDN) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Firebase Compat (CDN) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- html2canvas for downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <!-- Confetti logic -->
+    <script>
+        function shootConfetti() {
+            const canvas = document.createElement('canvas');
+            canvas.style.position = 'fixed';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.width = '100vw';
+            canvas.style.height = '100vh';
+            canvas.style.pointerEvents = 'none';
+            canvas.style.zIndex = '9999';
+            document.body.appendChild(canvas);
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const colors = ['#e94560', '#4ade80', '#fbbf24', '#0f3460'];
+
+            for (let i = 0; i < 150; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    r: Math.random() * 6 + 2,
+                    dx: Math.random() * 20 - 10,
+                    dy: Math.random() * 20 - 10,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    life: 100
+                });
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let alive = false;
+                particles.forEach(p => {
+                    if (p.life > 0) {
+                        alive = true;
+                        p.x += p.dx;
+                        p.y += p.dy;
+                        p.dy += 0.5; // gravity
+                        p.life--;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color;
+                        ctx.fill();
+                    }
+                });
+                if (!alive) {
+                    canvas.remove();
+                }
+            }
+            animate();
+        }
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // ----------------------------------------------------------------------
+        // CONFIG & DATA CONSTANTS
+        // ----------------------------------------------------------------------
+        const FIREBASE_CONFIG = {
+            apiKey: "AIzaSyAG5UNtcSDjuFDz-QM4Iu2zcoeU_Tu08JY",
+            authDomain: "nirmaanx-a14d3.firebaseapp.com",
+            projectId: "nirmaanx-a14d3",
+            storageBucket: "nirmaanx-a14d3.firebasestorage.app",
+            messagingSenderId: "567794514462",
+            appId: "1:567794514462:web:4429d3d978c47eaef88c0f"
+        };
+
+        const ANTIGRAVITY_API_KEY = "YOUR_API_KEY_HERE";
+        const API_URL = "https://api.antigravity.ai/v1/chat/completions";
+
+        const TIMELINE_NODES = [
+            { id: 1, title: "Election Announcement", emoji: "📢", desc: "The Election Commission of India (ECI) announces the election schedule. This marks the beginning of the electoral process.", quiz: { q: "Who announces the election schedule in India?", options: ["President", "Prime Minister", "Election Commission"], a: 2 } },
+            { id: 2, title: "Model Code of Conduct", emoji: "📜", desc: "A set of guidelines issued by the ECI for conduct of political parties and candidates during elections mainly with respect to speeches, polling day, polling booths, portfolios, election manifestos, processions and general conduct.", quiz: { q: "When does the Model Code of Conduct come into effect?", options: ["Voting day", "Announcement of schedule", "Result day"], a: 1 } },
+            { id: 3, title: "Voter Registration & Rolls", emoji: "📝", desc: "Citizens register to vote. The Electoral Roll is updated to include new eligible voters and remove those who are deceased or have moved.", quiz: { q: "What is the minimum voting age in India?", options: ["18", "21", "16"], a: 0 } },
+            { id: 4, title: "Nomination of Candidates", emoji: "🙋", desc: "Candidates submit their nomination papers to the Returning Officer along with an affidavit detailing their assets, liabilities, and criminal records (if any).", quiz: { q: "Who does a candidate submit nomination papers to?", options: ["Chief Minister", "Returning Officer", "Supreme Court"], a: 1 } },
+            { id: 5, title: "Scrutiny & Withdrawal", emoji: "🔍", desc: "Nomination papers are scrutinized. Validly nominated candidates are given a few days to withdraw their candidatures if they wish.", quiz: { q: "Can a candidate withdraw their nomination?", options: ["Yes", "No", "Only with PM's approval"], a: 0 } },
+            { id: 6, title: "Election Campaign", emoji: "📣", desc: "Parties and candidates campaign to persuade voters. Campaigning must stop 48 hours before polling begins.", quiz: { q: "When must campaigning stop before polling?", options: ["12 hours", "48 hours", "24 hours"], a: 1 } },
+            { id: 7, title: "Polling Day", emoji: "🗳️", desc: "Voters cast their votes securely at polling booths using Electronic Voting Machines (EVMs).", quiz: { q: "What machine is primarily used for voting in India?", options: ["EVM", "Typewriter", "ATM"], a: 0 } },
+            { id: 8, title: "Counting of Votes", emoji: "🧮", desc: "Votes are counted under the supervision of Returning Officers and Observers appointed by ECI.", quiz: { q: "Who supervises the counting of votes?", options: ["Police", "Returning Officers", "Media"], a: 1 } },
+            { id: 9, title: "Declaration of Results", emoji: "🏆", desc: "The candidate with the highest number of valid votes in a constituency is declared elected.", quiz: { q: "What system is used to determine the winner in Lok Sabha elections?", options: ["Proportional Representation", "First Past the Post", "Random Draw"], a: 1 } },
+            { id: 10, title: "Government Formation", emoji: "🏛️", desc: "The party or coalition with a majority of seats in the Lok Sabha is invited by the President to form the government.", quiz: { q: "Who invites the majority party to form the government?", options: ["Chief Justice", "President", "Outgoing PM"], a: 1 } },
+        ];
+
+        const QUIZ_BANK = [
+            { q: "What is the full form of EVM?", options: ["Electronic Voting Machine", "Electrical Vote Maker", "Election Verification Method", "Electronic VVPAT Machine"], a: 0 },
+            { q: "What is NOTA?", options: ["None of the Above", "New Option To Act", "National Organization of Teachers", "Not On The Agenda"], a: 0 },
+            { q: "Which body conducts elections to the Lok Sabha?", options: ["Supreme Court", "Parliament", "Election Commission of India", "NITI Aayog"], a: 2 },
+            { q: "How many members are there in the Election Commission currently?", options: ["1", "3", "5", "7"], a: 1 },
+            { q: "What is the term of a Lok Sabha member?", options: ["4 years", "5 years", "6 years", "Permanent"], a: 1 },
+            { q: "What is VVPAT?", options: ["Voter Verifiable Paper Audit Trail", "Valid Vote Paper Action Team", "Verification of Voting Protocol and Timing", "Voter Validation Process and Tool"], a: 0 }
+        ];
+
+        const FLASHCARDS = [
+            { term: "EVM", definition: "Electronic Voting Machine - device used to cast and record votes." },
+            { term: "NOTA", definition: "None Of The Above - option allowing voters to reject all candidates." },
+            { term: "ECI", definition: "Election Commission of India - autonomous constitutional authority responsible for administering elections." },
+            { term: "Lok Sabha", definition: "House of the People - lower house of India's bicameral Parliament." },
+            { term: "Rajya Sabha", definition: "Council of States - upper house of India's bicameral Parliament." }
+        ];
+
+        const COMPARE_DATA = {
+            "Lok Sabha vs Rajya Sabha": [
+                { category: "House Type", p1: "Lower House", p2: "Upper House", highlight: 0 },
+                { category: "Election Method", p1: "Direct Election", p2: "Indirect Election", highlight: 0 },
+                { category: "Term", p1: "5 Years", p2: "6 Years (1/3rd retire every 2 yrs)", highlight: 0 },
+                { category: "Minimum Age", p1: "25 Years", p2: "30 Years", highlight: 0 }
+            ],
+            "EVM vs Ballot Paper": [
+                { category: "Speed of Counting", p1: "Very Fast", p2: "Slow", highlight: 1 },
+                { category: "Invalid Votes", p1: "Not possible", p2: "Possible if stamped incorrectly", highlight: 1 },
+                { category: "Environmental Impact", p1: "Saves millions of trees", p2: "High paper usage", highlight: 1 },
+                { category: "Physical Verification", p1: "Requires VVPAT", p2: "Inherently physical", highlight: 2 }
+            ]
+        };
+
+        const RANKS = [
+            { name: "Novice Voter", min: 0, max: 99 },
+            { name: "Junior Election Officer", min: 100, max: 299 },
+            { name: "Assistant Returning Officer", min: 300, max: 599 },
+            { name: "Returning Officer", min: 600, max: 999 },
+            { name: "District Election Officer", min: 1000, max: 1499 },
+            { name: "Chief Election Officer", min: 1500, max: 99999 }
+        ];
+
+        const BADGES_INFO = {
+            "First Vote": { desc: "Complete Mock Voting Simulator" },
+            "Voter Ink": { desc: "Complete timeline Node 7 (Polling Day)" },
+            "Knowledge Seeker": { desc: "Complete first quiz" },
+            "Streak Master": { desc: "5-day login streak" },
+            "Compare Expert": { desc: "Use Compare Tool 3 times" },
+            "AI Curious": { desc: "Ask 10 questions to the chatbot" },
+            "Constitutional Hero": { desc: "Complete all 10 timeline nodes" }
+        };
+
+        // ----------------------------------------------------------------------
+        // FIREBASE SETUP (MOCK IF UNAVAILABLE)
+        // ----------------------------------------------------------------------
+        let db = null;
+        let auth = null;
+        try {
+            if (FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY") {
+                firebase.initializeApp(FIREBASE_CONFIG);
+                db = firebase.firestore();
+                auth = firebase.auth();
+            } else {
+                console.warn("Firebase not configured. Using local state only.");
+            }
+        } catch (e) {
+            console.error("Firebase init error", e);
+        }
+
+        // ----------------------------------------------------------------------
+        // REACT ICONS (SVG replacements)
+        // ----------------------------------------------------------------------
+        const Icons = {
+            Home: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>,
+            Timeline: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>,
+            Quiz: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>,
+            Vote: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>,
+            Compare: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>,
+            Chat: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>,
+            Menu: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>,
+            Bell: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>,
+            Close: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>,
+            Star: () => <svg className="w-5 h-5 text-badgeGold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>,
+            Share: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>,
+            Download: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>,
+            Palette: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
+        };
+
+        // ----------------------------------------------------------------------
+        // CONTEXTS
+        // ----------------------------------------------------------------------
+        const UserContext = React.createContext();
+        const ToastContext = React.createContext();
+
+        // ----------------------------------------------------------------------
+        // HOOKS
+        // ----------------------------------------------------------------------
+        function useLocalStorage(key, initialValue) {
+            const [storedValue, setStoredValue] = React.useState(() => {
+                try {
+                    const item = window.localStorage.getItem(key);
+                    return item ? JSON.parse(item) : initialValue;
+                } catch (error) {
+                    console.log(error);
+                    return initialValue;
+                }
+            });
+
+            const setValue = (value) => {
+                try {
+                    const valueToStore = value instanceof Function ? value(storedValue) : value;
+                    setStoredValue(valueToStore);
+                    window.localStorage.setItem(key, JSON.stringify(valueToStore));
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+            return [storedValue, setValue];
+        }
+
+        // ----------------------------------------------------------------------
+        // UI COMPONENTS
+        // ----------------------------------------------------------------------
+        const ToastManager = ({ toasts, removeToast }) => {
+            return (
+                <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
+                    {toasts.map(t => (
+                        <div key={t.id} className="glass-card px-4 py-3 flex items-center gap-3 animate-[slideIn_0.3s_ease-out] text-sm">
+                            {t.type === 'success' && <span className="text-success text-lg">✓</span>}
+                            {t.type === 'info' && <span className="text-accent2 text-lg">i</span>}
+                            {t.type === 'award' && <span className="text-badgeGold text-lg">🏆</span>}
+                            <span>{t.message}</span>
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        const AchievementModal = ({ badge, onClose }) => {
+            const cardRef = React.useRef();
+
+            const downloadCard = async () => {
+                if (cardRef.current) {
+                    const canvas = await html2canvas(cardRef.current, { backgroundColor: '#1a1a2e' });
+                    const link = document.createElement('a');
+                    link.download = `achievement-${badge.name}.png`;
+                    link.href = canvas.toDataURL();
+                    link.click();
+                }
+            };
+
+            const shareText = `I just earned the ${badge.name} badge on NirmaanX! 🇮🇳 #CivicEducation`;
+
+            return (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                    <div className="glass-card max-w-sm w-full p-6 relative">
+                        <button onClick={onClose} className="absolute top-4 right-4 text-textMuted hover:text-white">
+                            <Icons.Close />
+                        </button>
+                        
+                        <div ref={cardRef} className="bg-surface rounded-xl p-6 text-center border border-white/10 mb-6 relative overflow-hidden">
+                            <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent2/20 rounded-full blur-2xl"></div>
+                            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-accent1/20 rounded-full blur-2xl"></div>
+                            
+                            <h2 className="text-2xl font-bold mb-1 text-accent2">NirmaanX</h2>
+                            <p className="text-xs text-textMuted mb-6">Achievement Unlocked</p>
+                            
+                            <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-badgeGold to-accent1 flex items-center justify-center border-4 border-surface shadow-xl mb-4 relative z-10">
+                                <Icons.Star />
+                            </div>
+                            
+                            <h3 className="text-xl font-bold text-white mb-2">{badge.name}</h3>
+                            <p className="text-sm text-textMuted">{BADGES_INFO[badge.name].desc}</p>
+                            
+                            <div className="mt-4 pt-4 border-t border-white/10 flex justify-between text-xs text-textMuted">
+                                <span>Democracy Points: +50</span>
+                                <span>{new Date().toLocaleDateString()}</span>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-2">
+                            <button onClick={downloadCard} className="flex-1 py-2 rounded-lg bg-surface hover:bg-white/10 transition flex items-center justify-center gap-2">
+                                <Icons.Download /> Save
+                            </button>
+                            <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`} target="_blank" className="flex-1 py-2 rounded-lg bg-[#1DA1F2] hover:bg-opacity-90 transition flex items-center justify-center gap-2">
+                                𝕏 Share
+                            </a>
+                            <a href={`https://wa.me/?text=${encodeURIComponent(shareText)}`} target="_blank" className="flex-1 py-2 rounded-lg bg-[#25D366] hover:bg-opacity-90 transition flex items-center justify-center gap-2">
+                                <Icons.Share /> WA
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // ----------------------------------------------------------------------
+        // VIEWS
+        // ----------------------------------------------------------------------
+        
+        // 1. Dashboard
+        const HomeDashboard = ({ changeView }) => {
+            const { user } = React.useContext(UserContext);
+            const progress = (user.completedNodes.length / 10) * 100;
+            const nextNode = TIMELINE_NODES.find(n => !user.completedNodes.includes(n.id)) || TIMELINE_NODES[9];
+
+            return (
+                <div className="space-y-6 fade-in">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="md:col-span-2 glass-card p-6 flex flex-col md:flex-row items-center gap-6">
+                            <div className="flex-1">
+                                <h1 className="text-3xl font-bold mb-2">Welcome back, {user.name}! 👋</h1>
+                                <p className="text-textMuted mb-4">You are currently a <span className="text-accent2 font-semibold">{user.rank}</span>. Keep learning to level up!</p>
+                                <div className="flex gap-4 text-sm">
+                                    <div className="bg-surface px-3 py-1 rounded-full text-success">
+                                        <span className="font-bold">{user.dp}</span> DP
+                                    </div>
+                                    <div className="bg-surface px-3 py-1 rounded-full text-warning">
+                                        <span className="font-bold">{user.streakDays}</span> Day Streak 🔥
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="relative w-32 h-32 flex-shrink-0">
+                                <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
+                                    <path className="text-surface" strokeDasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke="currentColor" strokeWidth="3" fill="none" />
+                                    <path className="text-accent2 transition-all duration-1000" strokeDasharray={`${progress}, 100`} d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" />
+                                </svg>
+                                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                    <span className="text-xl font-bold">{Math.round(progress)}%</span>
+                                    <span className="text-[10px] text-textMuted uppercase">Modules</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="glass-card p-6">
+                            <h3 className="font-bold text-lg mb-4 text-textMuted uppercase tracking-wider text-sm">Continue Learning</h3>
+                            <div className="bg-surface rounded-lg p-4 mb-4 border border-white/5">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <span className="text-2xl">{nextNode.emoji}</span>
+                                    <h4 className="font-semibold">{nextNode.title}</h4>
+                                </div>
+                                <p className="text-xs text-textMuted line-clamp-2">{nextNode.desc}</p>
+                            </div>
+                            <button onClick={() => changeView('Timeline')} className="w-full py-2 bg-accent2 hover:bg-opacity-80 text-white font-medium rounded-lg transition">
+                                Resume Timeline
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div className="glass-card p-4 hover-lift">
+                            <div className="text-textMuted text-sm mb-1">Quizzes Completed</div>
+                            <div className="text-2xl font-bold">{user.quizScores.length}</div>
+                        </div>
+                        <div className="glass-card p-4 hover-lift">
+                            <div className="text-textMuted text-sm mb-1">Badges Earned</div>
+                            <div className="text-2xl font-bold">{user.badges.length} / 7</div>
+                        </div>
+                        <div className="glass-card p-4 hover-lift">
+                            <div className="text-textMuted text-sm mb-1">Simulations</div>
+                            <div className="text-2xl font-bold">{user.badges.includes('First Vote') ? '1' : '0'}</div>
+                        </div>
+                        <div className="glass-card p-4 hover-lift">
+                            <div className="text-textMuted text-sm mb-1">Global Rank</div>
+                            <div className="text-2xl font-bold text-success">#Top 10%</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 className="font-bold text-lg mb-4">Recent Achievements</h3>
+                        <div className="flex flex-wrap gap-4">
+                            {user.badges.length === 0 ? (
+                                <p className="text-textMuted text-sm">No badges earned yet. Start exploring the timeline!</p>
+                            ) : (
+                                user.badges.map(b => (
+                                    <div key={b} className="glass-card p-4 w-48 text-center flex flex-col items-center hover-lift">
+                                        <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-accent1 to-surface flex items-center justify-center border-2 border-accent2 mb-3">
+                                            <Icons.Star />
+                                        </div>
+                                        <div className="font-semibold text-sm">{b}</div>
+                                        <div className="text-xs text-textMuted mt-1">{BADGES_INFO[b].desc}</div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // 2. Timeline
+        const Timeline = () => {
+            const { user, awardDP, awardBadge } = React.useContext(UserContext);
+            const { addToast } = React.useContext(ToastContext);
+            const [selectedNode, setSelectedNode] = React.useState(null);
+            const [quizState, setQuizState] = React.useState({ answer: null, error: false });
+
+            const progressWidth = `${((user.completedNodes.length) / 10) * 100}%`;
+
+            const handleNodeClick = (node) => {
+                const prevNodeCompleted = node.id === 1 || user.completedNodes.includes(node.id - 1);
+                if (!prevNodeCompleted) {
+                    addToast('Complete previous stages first!', 'info');
+                    return;
+                }
+                setSelectedNode(node);
+                setQuizState({ answer: null, error: false });
+            };
+
+            const submitQuiz = () => {
+                if (quizState.answer === null) return;
+                if (quizState.answer === selectedNode.quiz.a) {
+                    // Success
+                    if (!user.completedNodes.includes(selectedNode.id)) {
+                        awardDP(20);
+                        const newCompleted = [...user.completedNodes, selectedNode.id];
+                        user.completedNodes = newCompleted; // Will be synced via context
+                        addToast(`Node completed! +20 DP`, 'success');
+                        
+                        if (selectedNode.id === 7) awardBadge('Voter Ink');
+                        if (selectedNode.id === 10) {
+                            awardBadge('Constitutional Hero');
+                            shootConfetti();
+                        }
+                    }
+                    setSelectedNode(null);
+                } else {
+                    setQuizState(prev => ({ ...prev, error: true }));
+                    setTimeout(() => setQuizState({ answer: null, error: false }), 2000);
+                }
+            };
+
+            return (
+                <div className="fade-in pb-10">
+                    <div className="mb-8">
+                        <h2 className="text-3xl font-bold mb-2">Election Journey</h2>
+                        <p className="text-textMuted">Follow the 10 steps of the Indian democratic process.</p>
+                        <div className="mt-4 h-2 bg-surface rounded-full overflow-hidden border border-white/5 relative">
+                            <div className="absolute top-0 left-0 h-full bg-success transition-all duration-700" style={{ width: progressWidth }}></div>
+                        </div>
+                        <p className="text-right text-xs mt-1 text-textMuted">{user.completedNodes.length}/10 Completed</p>
+                    </div>
+
+                    <div className="relative mt-20 py-10 overflow-x-auto custom-scrollbar">
+                        <div className="min-w-[1000px] relative px-10">
+                            <div className="timeline-line"></div>
+                            <div className="timeline-progress" style={{ width: progressWidth }}></div>
+                            
+                            <div className="flex justify-between relative z-10">
+                                {TIMELINE_NODES.map(node => {
+                                    const isCompleted = user.completedNodes.includes(node.id);
+                                    const isNext = node.id === 1 || (user.completedNodes.includes(node.id - 1) && !isCompleted);
+                                    const isLocked = !isCompleted && !isNext;
+
+                                    return (
+                                        <div key={node.id} className="flex flex-col items-center w-24 group cursor-pointer" onClick={() => handleNodeClick(node)}>
+                                            <div className={`w-14 h-14 rounded-full flex items-center justify-center text-2xl transition-all duration-300 border-4
+                                                ${isCompleted ? 'bg-success text-white border-success/30 shadow-[0_0_15px_rgba(74,222,128,0.5)]' : 
+                                                  isNext ? 'bg-surface text-white border-accent2 animate-pulse-slow shadow-[0_0_15px_rgba(233,69,96,0.3)]' : 
+                                                  'bg-surface text-white/30 border-white/5 opacity-50 blur-[1px]'}`}>
+                                                {node.emoji}
+                                            </div>
+                                            <div className={`text-xs text-center mt-3 font-medium ${isCompleted ? 'text-success' : isNext ? 'text-accent2' : 'text-textMuted'}`}>
+                                                {node.title}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Node Modal */}
+                    {selectedNode && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                            <div className="glass-card max-w-lg w-full p-6 relative animate-[slideIn_0.3s_ease-out]">
+                                <button onClick={() => setSelectedNode(null)} className="absolute top-4 right-4 text-textMuted hover:text-white"><Icons.Close /></button>
+                                
+                                <div className="text-4xl mb-4 text-center">{selectedNode.emoji}</div>
+                                <h3 className="text-2xl font-bold text-center mb-4">{selectedNode.title}</h3>
+                                <p className="text-sm text-textMuted mb-6 leading-relaxed bg-surface p-4 rounded-lg border border-white/5">{selectedNode.desc}</p>
+                                
+                                <div className="border-t border-white/10 pt-4">
+                                    <h4 className="font-semibold text-accent2 mb-3 text-sm tracking-wider uppercase">Knowledge Check</h4>
+                                    <p className="mb-4">{selectedNode.quiz.q}</p>
+                                    <div className="space-y-2">
+                                        {selectedNode.quiz.options.map((opt, idx) => (
+                                            <button 
+                                                key={idx}
+                                                onClick={() => setQuizState({ ...quizState, answer: idx })}
+                                                className={`w-full text-left px-4 py-3 rounded-lg border transition-all ${
+                                                    quizState.answer === idx ? 'border-accent2 bg-accent2/20' : 'border-white/10 bg-surface hover:bg-white/5'
+                                                } ${quizState.error && selectedNode.quiz.a === idx ? 'border-success bg-success/20' : ''}
+                                                ${quizState.error && quizState.answer === idx ? 'border-danger bg-danger/20 animate-[wiggle_0.3s_ease-in-out]' : ''}`}
+                                            >
+                                                {opt}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <button 
+                                        onClick={submitQuiz}
+                                        disabled={quizState.answer === null || quizState.error}
+                                        className="w-full mt-4 py-3 bg-accent2 disabled:bg-surface disabled:text-textMuted text-white rounded-lg font-bold transition"
+                                    >
+                                        {quizState.error ? 'Incorrect, try again...' : 'Submit Answer'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // 3. Quiz Arena
+        const QuizArena = () => {
+            const { awardDP, awardBadge } = React.useContext(UserContext);
+            const { addToast } = React.useContext(ToastContext);
+            const [mode, setMode] = React.useState(null); // 'A', 'B', 'C'
+            
+            // Mode A State
+            const [currentQ, setCurrentQ] = React.useState(0);
+            const [score, setScore] = React.useState(0);
+            const [finished, setFinished] = React.useState(false);
+
+            // Mode C State
+            const [fcIndex, setFcIndex] = React.useState(0);
+            const [flipped, setFlipped] = React.useState(false);
+
+            const startModeA = () => {
+                setMode('A');
+                setCurrentQ(0);
+                setScore(0);
+                setFinished(false);
+            };
+
+            const handleAnswerA = (selectedIdx) => {
+                if (selectedIdx === QUIZ_BANK[currentQ].a) {
+                    setScore(s => s + 10);
+                    awardDP(10);
+                    addToast('+10 DP', 'success');
+                }
+                
+                if (currentQ < QUIZ_BANK.length - 1) {
+                    setCurrentQ(c => c + 1);
+                } else {
+                    setFinished(true);
+                    awardDP(25);
+                    awardBadge('Knowledge Seeker');
+                }
+            };
+
+            const nextFc = () => {
+                setFlipped(false);
+                setTimeout(() => {
+                    setFcIndex((prev) => (prev + 1) % FLASHCARDS.length);
+                }, 150);
+            };
+
+            if (mode === 'A') {
+                if (finished) {
+                    return (
+                        <div className="fade-in glass-card p-8 text-center max-w-lg mx-auto mt-10">
+                            <h2 className="text-3xl font-bold mb-4">Quiz Completed!</h2>
+                            <div className="text-6xl mb-6">🎉</div>
+                            <p className="text-xl mb-2">Score: <span className="text-success font-bold">{score}</span></p>
+                            <p className="text-textMuted mb-6">+25 Bonus DP Awarded</p>
+                            <button onClick={() => setMode(null)} className="px-6 py-2 bg-surface hover:bg-white/10 rounded-lg transition">Back to Arena</button>
+                        </div>
+                    );
+                }
+                const q = QUIZ_BANK[currentQ];
+                return (
+                    <div className="fade-in max-w-2xl mx-auto mt-10">
+                        <div className="flex justify-between items-center mb-6">
+                            <span className="text-textMuted">Question {currentQ + 1} of {QUIZ_BANK.length}</span>
+                            <span className="text-success font-bold">Score: {score}</span>
+                        </div>
+                        <div className="glass-card p-8">
+                            <h3 className="text-xl font-semibold mb-6">{q.q}</h3>
+                            <div className="space-y-3">
+                                {q.options.map((opt, i) => (
+                                    <button 
+                                        key={i} 
+                                        onClick={() => handleAnswerA(i)}
+                                        className="w-full text-left px-5 py-4 bg-surface border border-white/5 hover:border-accent2 hover:bg-white/5 rounded-xl transition"
+                                    >
+                                        {opt}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (mode === 'C') {
+                const fc = FLASHCARDS[fcIndex];
+                return (
+                    <div className="fade-in max-w-md mx-auto mt-10 text-center">
+                        <div className="text-textMuted mb-4">Card {fcIndex + 1} of {FLASHCARDS.length}</div>
+                        <div className="flip-card w-full h-64 cursor-pointer perspective-1000" onClick={() => setFlipped(!flipped)}>
+                            <div className={`flip-card-inner relative w-full h-full text-center ${flipped ? 'transform rotate-y-180' : ''}`} style={{ transition: 'transform 0.6s', transformStyle: 'preserve-3d' }}>
+                                <div className="flip-card-front absolute w-full h-full glass-card flex items-center justify-center p-6 backface-hidden" style={{ backfaceVisibility: 'hidden' }}>
+                                    <h2 className="text-3xl font-bold text-accent2">{fc.term}</h2>
+                                    <p className="absolute bottom-4 text-xs text-textMuted">Click to flip</p>
+                                </div>
+                                <div className="flip-card-back absolute w-full h-full glass-card bg-surface flex items-center justify-center p-6 backface-hidden" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+                                    <p className="text-lg leading-relaxed">{fc.definition}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="mt-8 flex justify-between gap-4">
+                            <button onClick={() => setMode(null)} className="px-6 py-2 bg-surface rounded-lg">Exit</button>
+                            <button onClick={nextFc} className="px-6 py-2 bg-accent2 text-white rounded-lg">Next Card</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="fade-in space-y-6">
+                    <div className="mb-8">
+                        <h2 className="text-3xl font-bold mb-2">Quiz Arena</h2>
+                        <p className="text-textMuted">Test your knowledge and earn Democracy Points.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="glass-card p-6 flex flex-col justify-between hover-lift">
+                            <div>
+                                <div className="text-4xl mb-4">📝</div>
+                                <h3 className="text-xl font-bold mb-2">Standard Quiz</h3>
+                                <p className="text-sm text-textMuted mb-6">A random selection of multiple-choice questions from our database.</p>
+                            </div>
+                            <button onClick={startModeA} className="w-full py-2 bg-surface border border-accent2 text-accent2 hover:bg-accent2 hover:text-white rounded-lg transition font-medium">Start Standard</button>
+                        </div>
+
+                        <div className="glass-card p-6 flex flex-col justify-between opacity-70">
+                            <div>
+                                <div className="text-4xl mb-4">🤖</div>
+                                <h3 className="text-xl font-bold mb-2">AI Generated</h3>
+                                <p className="text-sm text-textMuted mb-6">Type a topic and let AI generate a custom quiz for you. (Coming soon)</p>
+                            </div>
+                            <button disabled className="w-full py-2 bg-surface text-textMuted rounded-lg cursor-not-allowed font-medium">Start AI Mode</button>
+                        </div>
+
+                        <div className="glass-card p-6 flex flex-col justify-between hover-lift">
+                            <div>
+                                <div className="text-4xl mb-4">🎴</div>
+                                <h3 className="text-xl font-bold mb-2">Flashcards</h3>
+                                <p className="text-sm text-textMuted mb-6">Learn terms and definitions quickly with interactive flip cards.</p>
+                            </div>
+                            <button onClick={() => setMode('C')} className="w-full py-2 bg-surface border border-success text-success hover:bg-success hover:text-white rounded-lg transition font-medium">Start Flashcards</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // 4. Simulator
+        const Simulator = () => {
+            const { awardDP, awardBadge } = React.useContext(UserContext);
+            const { addToast } = React.useContext(ToastContext);
+            const [step, setStep] = React.useState(0);
+            
+            const steps = [
+                { title: "Arrival", desc: "Welcome to the Polling Booth. Please wait in line.", emoji: "🚶‍♂️" },
+                { title: "Verification", desc: "Polling Officer checks your Voter ID and slip.", emoji: "🆔" },
+                { title: "Indelible Ink", desc: "Second Officer applies ink on your left forefinger.", emoji: "☝️" },
+                { title: "Register", desc: "Sign the register and receive your voting slip.", emoji: "✍️" },
+                { title: "Booth Entry", desc: "Hand slip to Third Officer and proceed to the compartment.", emoji: "🚪" },
+                { title: "EVM Voting", desc: "Press the blue button next to your chosen candidate. Wait for the beep.", emoji: "📠" },
+                { title: "VVPAT", desc: "Check the printed slip in the VVPAT window for 7 seconds.", emoji: "🧾" }
+            ];
+
+            const nextStep = () => {
+                if (step === steps.length - 1) {
+                    awardDP(30);
+                    awardBadge('First Vote');
+                    addToast('Simulator completed! +30 DP', 'success');
+                    setStep(-1); // Finished state
+                } else {
+                    if (step === 5) {
+                        // Play beep
+                        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                        const osc = ctx.createOscillator();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(800, ctx.currentTime);
+                        osc.connect(ctx.destination);
+                        osc.start();
+                        osc.stop(ctx.currentTime + 0.5);
+                    }
+                    setStep(s => s + 1);
+                }
+            };
+
+            if (step === -1) {
+                return (
+                    <div className="fade-in glass-card p-10 text-center max-w-lg mx-auto mt-10">
+                        <div className="text-6xl mb-6">🇮🇳</div>
+                        <h2 className="text-3xl font-bold mb-4">You have exercised your democratic right!</h2>
+                        <p className="text-textMuted mb-6">Congratulations on successfully navigating the voting process.</p>
+                        <button onClick={() => setStep(0)} className="px-6 py-2 bg-accent2 text-white rounded-lg transition">Simulate Again</button>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="fade-in">
+                    <div className="mb-8">
+                        <h2 className="text-3xl font-bold mb-2">Mock Voting Simulator</h2>
+                        <p className="text-textMuted">Experience the step-by-step process of casting a vote.</p>
+                    </div>
+
+                    <div className="max-w-2xl mx-auto glass-card p-8">
+                        <div className="flex justify-between text-xs text-textMuted mb-8">
+                            <span>Step {step + 1} of {steps.length}</span>
+                            <span>{steps[step].title}</span>
+                        </div>
+                        
+                        <div className="flex gap-2 mb-8">
+                            {steps.map((s, i) => (
+                                <div key={i} className={`h-1 flex-1 rounded-full ${i <= step ? 'bg-accent2' : 'bg-surface'}`}></div>
+                            ))}
+                        </div>
+
+                        <div className="text-center py-10">
+                            <div className="text-7xl mb-6 animate-pulse-slow">{steps[step].emoji}</div>
+                            <h3 className="text-2xl font-bold mb-4">{steps[step].title}</h3>
+                            <p className="text-lg text-textMuted">{steps[step].desc}</p>
+                            
+                            {step === 5 && (
+                                <div className="mt-8 bg-surface p-4 rounded-xl border border-white/5 inline-block text-left w-64">
+                                    {['Party A', 'Party B', 'Party C', 'NOTA'].map((p, i) => (
+                                        <div key={i} className="flex justify-between items-center py-2 border-b border-white/5 last:border-0">
+                                            <span className="font-mono">{p}</span>
+                                            <button onClick={nextStep} className="w-6 h-6 rounded-full bg-blue-600 hover:bg-blue-400 border-2 border-blue-800 transition"></button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {step !== 5 && (
+                            <div className="flex justify-end mt-4">
+                                <button onClick={nextStep} className="px-8 py-3 bg-accent2 hover:bg-opacity-80 text-white rounded-lg font-bold transition">
+                                    {step === steps.length - 1 ? 'Finish' : 'Next Step'}
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        // 5. Compare Tool
+        const CompareTool = () => {
+            const { awardBadge } = React.useContext(UserContext);
+            const [selectedComp, setSelectedComp] = React.useState(Object.keys(COMPARE_DATA)[0]);
+
+            React.useEffect(() => {
+                // Tracking usage for badge could go here
+                awardBadge('Compare Expert');
+            }, []);
+
+            const data = COMPARE_DATA[selectedComp];
+            const parts = selectedComp.split(' vs ');
+
+            return (
+                <div className="fade-in">
+                     <div className="mb-8 flex justify-between items-end">
+                        <div>
+                            <h2 className="text-3xl font-bold mb-2">Compare Systems</h2>
+                            <p className="text-textMuted">Understand differences between democratic structures.</p>
+                        </div>
+                        <select 
+                            className="bg-surface border border-white/10 rounded-lg px-4 py-2 text-white outline-none"
+                            value={selectedComp}
+                            onChange={(e) => setSelectedComp(e.target.value)}
+                        >
+                            {Object.keys(COMPARE_DATA).map(k => <option key={k} value={k}>{k}</option>)}
+                        </select>
+                    </div>
+
+                    <div className="glass-card overflow-hidden">
+                        <div className="grid grid-cols-3 bg-surface p-4 font-bold border-b border-white/10 text-center">
+                            <div className="text-left text-textMuted uppercase tracking-wider text-xs">Feature</div>
+                            <div className="text-accent2 text-lg">{parts[0]}</div>
+                            <div className="text-accent1 text-lg">{parts[1]}</div>
+                        </div>
+                        
+                        {data.map((row, idx) => (
+                            <div key={idx} className="grid grid-cols-3 p-4 border-b border-white/5 hover:bg-white/5 transition">
+                                <div className="font-medium text-textMuted flex items-center">{row.category}</div>
+                                <div className={`text-center p-2 rounded ${row.highlight === 1 ? 'bg-success/10 text-success' : ''}`}>{row.p1}</div>
+                                <div className={`text-center p-2 rounded ${row.highlight === 2 ? 'bg-success/10 text-success' : ''}`}>{row.p2}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        // 6. AI Chatbot
+        const Chatbot = () => {
+            const { awardBadge } = React.useContext(UserContext);
+            const [messages, setMessages] = React.useState([{ role: 'assistant', content: 'Namaste! I am ElectionBot. Ask me anything about Indian elections, voting rights, or the Constitution!' }]);
+            const [input, setInput] = React.useState('');
+            const [loading, setLoading] = React.useState(false);
+            const chatEndRef = React.useRef(null);
+
+            const scrollToBottom = () => {
+                chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            };
+
+            React.useEffect(scrollToBottom, [messages]);
+
+            const sendMessage = async (text) => {
+                const msg = text || input;
+                if (!msg.trim()) return;
+
+                const newMsgs = [...messages, { role: 'user', content: msg }];
+                setMessages(newMsgs);
+                setInput('');
+                setLoading(true);
+
+                if (newMsgs.filter(m => m.role === 'user').length === 10) {
+                    awardBadge('AI Curious');
+                }
+
+                try {
+                    // MOCK RESPONSE IF API KEY NOT SET
+                    if (ANTIGRAVITY_API_KEY === "YOUR_API_KEY_HERE") {
+                        setTimeout(() => {
+                            setMessages([...newMsgs, { role: 'assistant', content: `[Mock API Response] You asked: "${msg}". Please add your Antigravity API key in the source code to enable real AI responses.` }]);
+                            setLoading(false);
+                        }, 1000);
+                        return;
+                    }
+
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${ANTIGRAVITY_API_KEY}`
+                        },
+                        body: JSON.stringify({
+                            model: "gemini-1.5-pro", // Or equivalent depending on provider
+                            messages: [
+                                { role: 'system', content: "You are ElectionBot, an expert on Indian elections, the Constitution, ECI, voting rights. Explain clearly for students. Keep under 100 words." },
+                                ...newMsgs
+                            ]
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    setMessages([...newMsgs, { role: 'assistant', content: data.choices[0].message.content }]);
+                } catch (error) {
+                    console.error(error);
+                    setMessages([...newMsgs, { role: 'assistant', content: "Sorry, I'm having trouble connecting to my servers right now." }]);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <div className="fade-in h-[calc(100vh-120px)] flex flex-col">
+                    <div className="mb-4">
+                        <h2 className="text-3xl font-bold">ElectionBot AI</h2>
+                    </div>
+
+                    <div className="glass-card flex-1 flex flex-col overflow-hidden relative">
+                        <div className="flex-1 p-6 overflow-y-auto custom-scrollbar space-y-4">
+                            {messages.map((m, i) => (
+                                <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                    <div className={`max-w-[80%] p-4 rounded-2xl ${m.role === 'user' ? 'bg-accent2 text-white rounded-br-sm' : 'bg-surface border border-white/5 text-textPrimary rounded-bl-sm'}`}>
+                                        {m.content}
+                                    </div>
+                                </div>
+                            ))}
+                            {loading && (
+                                <div className="flex justify-start">
+                                    <div className="bg-surface p-4 rounded-2xl rounded-bl-sm flex gap-2 items-center">
+                                        <div className="w-2 h-2 bg-textMuted rounded-full animate-bounce"></div>
+                                        <div className="w-2 h-2 bg-textMuted rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                                        <div className="w-2 h-2 bg-textMuted rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                                    </div>
+                                </div>
+                            )}
+                            <div ref={chatEndRef} />
+                        </div>
+                        
+                        {messages.length === 1 && (
+                            <div className="absolute bottom-20 left-0 w-full px-6 flex flex-wrap gap-2">
+                                {["What is EVM?", "Who is the Chief Election Commissioner?", "Difference between MP and MLA"].map((q, i) => (
+                                    <button key={i} onClick={() => sendMessage(q)} className="text-xs bg-surface border border-white/10 hover:border-accent2 px-3 py-1.5 rounded-full transition">{q}</button>
+                                ))}
+                            </div>
+                        )}
+
+                        <div className="p-4 bg-surface border-t border-white/5 flex gap-2">
+                            <input 
+                                type="text" 
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                                placeholder="Ask about elections..." 
+                                className="flex-1 bg-[#1a1a2e] border border-white/10 rounded-lg px-4 py-2 outline-none focus:border-accent2 transition"
+                            />
+                            <button onClick={() => sendMessage()} className="bg-accent2 hover:bg-opacity-80 px-4 rounded-lg transition text-white">Send</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // ----------------------------------------------------------------------
+        // MAIN APP COMPONENT
+        // ----------------------------------------------------------------------
+        const App = () => {
+            const [view, setView] = React.useState('Dashboard');
+            const [isMobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+            const [toasts, setToasts] = React.useState([]);
+            const [showBadgeModal, setShowBadgeModal] = React.useState(null);
+            
+            // Theme State
+            const [theme, setTheme] = useLocalStorage('nirmaanx_theme', 'C');
+            const [showThemeMenu, setShowThemeMenu] = React.useState(false);
+            const THEMES = [
+                { id: 'C', name: 'Cream + Olive', color: '#5a6e35' },
+                { id: 'A', name: 'Warm Parchment', color: '#e8c84a' },
+                { id: 'B', name: 'Stark Yellow Dark', color: '#f5e642' },
+                { id: 'D', name: 'Midnight Blue', color: '#1f6feb' },
+                { id: 'E', name: 'Saffron + Ivory', color: '#c0392b' },
+                { id: 'F', name: 'Catppuccin Mocha', color: '#cba6f7' }
+            ];
+
+            React.useEffect(() => {
+                document.documentElement.setAttribute('data-theme', theme);
+            }, [theme]);
+
+            // User State Initialization
+            const [user, setUser] = useLocalStorage('nirmaanx_user', {
+                uid: 'local_user_' + Date.now(),
+                name: 'Student',
+                dp: 0,
+                rank: RANKS[0].name,
+                badges: [],
+                completedNodes: [],
+                quizScores: [],
+                streakDays: 1,
+                lastLogin: new Date().toDateString()
+            });
+
+            // Logic to handle DP and Rank updates
+            const calculateRank = (dp) => {
+                const rank = RANKS.slice().reverse().find(r => dp >= r.min);
+                return rank ? rank.name : RANKS[0].name;
+            };
+
+            const awardDP = (points) => {
+                setUser(prev => {
+                    const newDp = prev.dp + points;
+                    return { ...prev, dp: newDp, rank: calculateRank(newDp) };
+                });
+            };
+
+            const awardBadge = (badgeName) => {
+                setUser(prev => {
+                    if (!prev.badges.includes(badgeName)) {
+                        setShowBadgeModal({ name: badgeName });
+                        return { ...prev, badges: [...prev.badges, badgeName] };
+                    }
+                    return prev;
+                });
+            };
+
+            const addToast = (message, type = 'info') => {
+                const id = Date.now();
+                setToasts(prev => [...prev, { id, message, type }]);
+                setTimeout(() => {
+                    setToasts(prev => prev.filter(t => t.id !== id));
+                }, 3000);
+            };
+
+            const navItems = [
+                { id: 'Dashboard', icon: Icons.Home },
+                { id: 'Timeline', icon: Icons.Timeline },
+                { id: 'Quiz', icon: Icons.Quiz },
+                { id: 'Simulator', icon: Icons.Vote },
+                { id: 'Compare', icon: Icons.Compare },
+                { id: 'Chatbot', icon: Icons.Chat }
+            ];
+
+            return (
+                <UserContext.Provider value={{ user, awardDP, awardBadge }}>
+                <ToastContext.Provider value={{ addToast }}>
+                    <div className="flex h-screen overflow-hidden bg-primary text-textPrimary">
+                        
+                        {/* Sidebar */}
+                        <div className={`fixed md:static inset-y-0 left-0 z-40 w-64 glass-panel transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition duration-300 ease-in-out flex flex-col`}>
+                            <div className="p-6 flex items-center gap-3">
+                                <div className="w-10 h-10 bg-accent2 rounded-lg flex items-center justify-center text-xl shadow-[0_0_15px_rgba(233,69,96,0.5)]">🇮🇳</div>
+                                <h1 className="text-xl font-bold tracking-tight text-white">NirmaanX</h1>
+                            </div>
+                            
+                            <nav className="flex-1 px-4 space-y-2 mt-4">
+                                {navItems.map(item => (
+                                    <button 
+                                        key={item.id}
+                                        onClick={() => { setView(item.id); setMobileMenuOpen(false); }}
+                                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition ${view === item.id ? 'bg-accent2/20 text-accent2 font-semibold border border-accent2/30' : 'text-textMuted hover:bg-white/5 hover:text-white'}`}
+                                    >
+                                        <item.icon />
+                                        {item.id}
+                                    </button>
+                                ))}
+                            </nav>
+                            
+                            <div className="p-6 border-t border-white/5">
+                                <div className="text-xs text-textMuted text-center">Version 1.0 (Standalone)</div>
+                            </div>
+                        </div>
+
+                        {/* Main Content */}
+                        <div className="flex-1 flex flex-col overflow-hidden relative z-10">
+                            
+                            {/* Topbar */}
+                            <header className="h-20 border-b border-white/5 bg-primary/80 backdrop-blur-md flex items-center justify-between px-6 z-20">
+                                <button className="md:hidden text-white" onClick={() => setMobileMenuOpen(true)}>
+                                    <Icons.Menu />
+                                </button>
+                                
+                                <div className="hidden md:block font-medium text-textMuted">
+                                    {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                                </div>
+
+                                <div className="flex items-center gap-4 md:gap-6">
+                                    <div className="hidden sm:flex items-center gap-2 bg-surface px-4 py-2 rounded-full border border-white/10 cursor-help" title="Democracy Points">
+                                        <span className="text-success font-bold">{user.dp}</span>
+                                        <span className="text-xs text-textMuted">DP</span>
+                                    </div>
+                                    <div className="hidden sm:flex items-center gap-2 bg-surface px-4 py-2 rounded-full border border-white/10 cursor-help">
+                                        <div className="w-2 h-2 bg-accent2 rounded-full animate-pulse"></div>
+                                        <span className="text-xs font-semibold">{user.rank}</span>
+                                    </div>
+                                    
+                                    <div className="relative">
+                                        <button 
+                                            onClick={() => setShowThemeMenu(!showThemeMenu)}
+                                            className="text-textMuted hover:text-white transition p-2 rounded-full hover:bg-white/5"
+                                            title="Change Theme"
+                                        >
+                                            <Icons.Palette />
+                                        </button>
+                                        
+                                        {showThemeMenu && (
+                                            <div className="absolute right-0 mt-2 w-48 bg-surface border border-white/10 rounded-xl shadow-2xl py-2 z-50 animate-[slideIn_0.2s_ease-out]">
+                                                <div className="px-4 py-2 text-xs font-bold text-textMuted uppercase tracking-wider border-b border-white/5 mb-2">Select Theme</div>
+                                                {THEMES.map(t => (
+                                                    <button 
+                                                        key={t.id}
+                                                        onClick={() => { setTheme(t.id); setShowThemeMenu(false); }}
+                                                        className={`w-full flex items-center gap-3 px-4 py-2 hover:bg-white/5 transition text-left text-sm ${theme === t.id ? 'text-accent2 font-bold' : 'text-textPrimary'}`}
+                                                    >
+                                                        <span className="w-4 h-4 rounded-full border border-white/20 flex-shrink-0" style={{ backgroundColor: t.color }}></span>
+                                                        {t.name}
+                                                        {theme === t.id && <span className="ml-auto">✓</span>}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <button className="relative text-textMuted hover:text-white transition p-2 rounded-full hover:bg-white/5">
+                                        <Icons.Bell />
+                                        <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-accent2 rounded-full border-2 border-primary"></span>
+                                    </button>
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-accent1 to-accent2 flex items-center justify-center font-bold border-2 border-white/10">
+                                        {user.name.charAt(0)}
+                                    </div>
+                                </div>
+                            </header>
+
+                            {/* View Container */}
+                            <main className="flex-1 overflow-x-hidden overflow-y-auto bg-primary p-6 md:p-10 custom-scrollbar relative">
+                                {/* Decorative background elements */}
+                                <div className="absolute top-0 left-1/4 w-96 h-96 bg-accent1/10 rounded-full blur-3xl pointer-events-none"></div>
+                                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent2/10 rounded-full blur-3xl pointer-events-none"></div>
+                                
+                                <div className="relative z-10 max-w-6xl mx-auto">
+                                    {view === 'Dashboard' && <HomeDashboard changeView={setView} />}
+                                    {view === 'Timeline' && <Timeline />}
+                                    {view === 'Quiz' && <QuizArena />}
+                                    {view === 'Simulator' && <Simulator />}
+                                    {view === 'Compare' && <CompareTool />}
+                                    {view === 'Chatbot' && <Chatbot />}
+                                </div>
+                            </main>
+                        </div>
+
+                        {/* Overlay for mobile menu */}
+                        {isMobileMenuOpen && (
+                            <div 
+                                className="fixed inset-0 bg-black/50 z-30 md:hidden"
+                                onClick={() => setMobileMenuOpen(false)}
+                            ></div>
+                        )}
+                        
+                        <ToastManager toasts={toasts} />
+                        {showBadgeModal && <AchievementModal badge={showBadgeModal} onClose={() => setShowBadgeModal(null)} />}
+                    </div>
+                </ToastContext.Provider>
+                </UserContext.Provider>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
