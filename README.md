@@ -40,6 +40,51 @@ NirmaanX takes a highly optimized, no-build approach:
 - **Backend & Database**: Firebase 9 Compat SDK (Auth + Firestore).
 - **Hosting / Deployment**: Google Cloud Run via Nginx containerization.
 
+### 📐 System Flow
+
+```mermaid
+graph TD
+    subgraph Client["Client Browser"]
+        UI["NirmaanX SPA (React 18)"]
+        State["React Context + LocalStorage"]
+        Styling["Tailwind CSS + CSS Vars"]
+        Babel["Babel Standalone"]
+        UI --> State
+        UI --> Styling
+        Babel -.->|Compiles JSX| UI
+    end
+
+    subgraph CDNs["Content Delivery Networks"]
+        ReactCDN["unpkg (React)"]
+        TailwindCDN["cdn.tailwindcss.com"]
+        FirebaseCDN["gstatic (Firebase)"]
+        ReactCDN -.->|Provides Scripts| Client
+        TailwindCDN -.->|Provides Scripts| Client
+        FirebaseCDN -.->|Provides Scripts| Client
+    end
+
+    subgraph GCP["Google Cloud Platform"]
+        CloudRun["Cloud Run (Nginx Container)"]
+        CloudBuild["Cloud Build (CI/CD)"]
+        CloudRun -.->|Serves index.html| Client
+        CloudBuild -.->|Deploys Docker Image| CloudRun
+    end
+
+    subgraph Firebase["Firebase Services"]
+        Firestore[("Cloud Firestore")]
+        Auth["Firebase Auth"]
+        FirestoreRules["Security Rules"]
+        FirestoreRules -.->|Protects| Firestore
+        UI <-->|Reads/Writes Data| Firestore
+        UI <-->|Authenticates| Auth
+    end
+
+    subgraph External["External APIs"]
+        Antigravity["Antigravity AI (Gemini)"]
+        UI <-->|Sends Q&A Prompts| Antigravity
+    end
+```
+
 ### 📂 Directory Structure
 
 ```text
