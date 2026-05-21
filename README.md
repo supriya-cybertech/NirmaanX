@@ -13,7 +13,7 @@
 
 ## 📖 Overview
 
-**NirmaanX** is a cutting-edge, single-page web application designed to educate students and citizens about the democratic processes of India. Built entirely within a **single, self-contained HTML file**, it avoids complex build tools by leveraging robust CDN distributions of React 18, Tailwind CSS, and Firebase. 
+**NirmaanX** is a cutting-edge, single-page web application designed to educate students and citizens about the democratic processes of India. Built entirely within a **single, self-contained HTML[...]
 
 From interactive timelines to a full-fledged mock voting simulator, NirmaanX gamifies civic education.
 
